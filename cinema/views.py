@@ -80,7 +80,8 @@ class MovieViewSet(
         parameters=[
             OpenApiParameter(
                 name="title",
-                description="Case-insensitive substring match in title. Example: ?title=potter",
+                description="Case-insensitive substring match in title. "
+                            "Example: ?title=potter",
                 type=OpenApiTypes.STR,
                 location=OpenApiParameter.QUERY,
             ),
@@ -97,7 +98,8 @@ class MovieViewSet(
                 location=OpenApiParameter.QUERY,
             ),
         ],
-        description="List movies with optional filtering by title, genre IDs, and actor IDs.",
+        description="List movies with optional filtering by title, "
+                    "genre IDs, and actor IDs.",
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -141,7 +143,8 @@ class MovieViewSet(
         return MovieSerializer
 
     @extend_schema(
-        description="Upload an image for a specific movie. Accepts multipart/form-data.",
+        description="Upload an image for a specific movie. "
+                    "Accepts multipart/form-data.",
         request=MovieImageSerializer,  # body schema
         responses=MovieImageSerializer,  # success schema
     )
@@ -169,8 +172,8 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
         .select_related("movie", "cinema_hall")
         .annotate(
             tickets_available=(
-                    F("cinema_hall__rows") * F("cinema_hall__seats_in_row")
-                    - Count("tickets")
+                F("cinema_hall__rows") * F("cinema_hall__seats_in_row")
+                - Count("tickets")
             )
         )
     )
@@ -207,7 +210,8 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
         parameters=[
             OpenApiParameter(
                 name="date",
-                description="Filter by date in YYYY-MM-DD format. Example: ?date=2022-12-12",
+                description="Filter by date in YYYY-MM-DD format. "
+                            "Example: ?date=2022-12-12",
                 type=OpenApiTypes.DATE,
                 location=OpenApiParameter.QUERY,
             ),
@@ -218,7 +222,8 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
                 location=OpenApiParameter.QUERY,
             ),
         ],
-        description="List movie sessions with optional filtering by date and movie ID.",
+        description="List movie sessions "
+                    "with optional filtering by date and movie ID.",
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)

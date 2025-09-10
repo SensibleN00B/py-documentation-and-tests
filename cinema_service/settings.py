@@ -156,7 +156,8 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Cinema API",
-    "DESCRIPTION": "REST API for movies, actors, genres, cinema halls, sessions, and orders.",
+    "DESCRIPTION": "REST API for movies, actors, genres, "
+                   "cinema halls, sessions, and orders.",
     "VERSION": "1.0.0",
     "SECURITY": [{"bearerAuth": []}],
     "SERVE_INCLUDE_SCHEMA": False,
