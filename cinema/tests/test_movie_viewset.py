@@ -10,10 +10,16 @@ from rest_framework.test import APIClient
 
 from cinema.models import Movie, Genre, Actor
 
-
 MOVIES_LIST_URL = lambda: reverse("cinema:movie-list")
 MOVIE_DETAIL_URL = lambda pk: reverse("cinema:movie-detail", args=[pk])
 MOVIE_UPLOAD_IMAGE_URL = lambda pk: reverse("cinema:movie-upload-image", args=[pk])
+
+
+def obtain_access_token(client: APIClient, username: str, password: str) -> str:
+    url = reverse("token_obtain_pair")
+    res = client.post(url, {"username": username, "password": password}, format="json")
+    assert res.status_code == 200, f"Token obtain failed: {res.status_code} {res.data}"
+    return res.data["access"]
 
 
 def create_user(**params):
@@ -67,8 +73,11 @@ class TestPublicMovieViewSet(TestCase):
 class TestPrivateMovieViewSetReadOnly(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = create_user(email="u1", password="pass12345")
-        self.client.force_authenticate(self.user)
+        self.user = get_user_model().objects.create_user(
+            email="u1", password="pass12345"
+        )
+        token = obtain_access_token(self.client, self.user.username or self.user.email, "pass12345")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
     def test_list_returns_slug_and_image_fields(self):
         genre1 = create_genre("Drama")
@@ -169,8 +178,11 @@ class TestPrivateMovieViewSetReadOnly(TestCase):
 class TestAdminMovieViewSet(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.admin_user = create_admin(email="admin@admin.com", password="pass12345")
-        self.client.force_authenticate(self.admin_user)
+        self.admin = get_user_model().objects.create_superuser(
+            email="admin@admin.com", password="pass12345"
+        )
+        token = obtain_access_token(self.client, self.admin.username or self.admin.email, "pass12345")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
 
     def test_admin_can_create_movie_with_relations(self):
         genre1 = create_genre("G1")

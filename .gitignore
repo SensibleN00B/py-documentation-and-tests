@@ -10,3 +10,5 @@ venv/
 *.pyc
 **db.sqlite3
 media/
+.dockerignore
+Dockerfile
