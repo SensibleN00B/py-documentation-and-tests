@@ -17,7 +17,7 @@ MOVIE_UPLOAD_IMAGE_URL = lambda pk: reverse("cinema:movie-upload-image", args=[p
 
 def obtain_access_token(client: APIClient, username: str, password: str) -> str:
     url = reverse("token_obtain_pair")
-    res = client.post(url, {"username": username, "password": password}, format="json")
+    res = client.post(url, {"email": username, "password": password}, format="json")
     assert res.status_code == 200, f"Token obtain failed: {res.status_code} {res.data}"
     return res.data["access"]
 
